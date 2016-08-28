@@ -6,17 +6,23 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.heroiclabs.sdk.android.Client;
 import com.heroiclabs.sdk.android.HttpClient;
 import com.heroiclabs.sdk.android.Session;
 import com.heroiclabs.sdk.android.entity.Gamer;
 import com.heroiclabs.sdk.android.entity.Match;
+import com.heroiclabs.sdk.android.entity.MatchGamer;
 import com.heroiclabs.sdk.android.entity.MatchList;
 import com.heroiclabs.sdk.android.request.CreateEmailRequest;
 import com.heroiclabs.sdk.android.request.GamerGetRequest;
 import com.heroiclabs.sdk.android.request.LoginEmailRequest;
 import com.heroiclabs.sdk.android.request.MatchListRequest;
+import com.heroiclabs.sdk.android.request.MatchTurnListRequest;
+import com.heroiclabs.sdk.android.request.MatchTurnSubmitRequest;
 import com.heroiclabs.sdk.android.request.MatchmakingRequest;
 import com.heroiclabs.sdk.android.response.ErrorResponse;
 import com.heroiclabs.sdk.android.response.Response;
@@ -24,17 +30,24 @@ import com.heroiclabs.sdk.android.util.Codec;
 import com.heroiclabs.sdk.android.util.json.JsonCodec;
 import com.stumbleupon.async.Callback;
 
+import java.util.List;
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
 
     private Client client;
     SharedPreferences prefs;
     private Session session;
     private Gamer gamer;
+    EditText editText;
+    Match myTurnsMatch;
+    GameState gameState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        editText = (EditText) findViewById(R.id.editText);
 
         prefs = this.getSharedPreferences("heroiclab.test.fcaldas.heroiclabstest", Context.MODE_PRIVATE);
     }
@@ -213,8 +226,20 @@ public class MainActivity extends AppCompatActivity {
                         Match match = response.get();
                         if (match == null) {
                             System.out.println("You have been queued.");
+                            //Toast.makeText(MainActivity.this, "You have been queued", Toast.LENGTH_LONG).show();
                         } else {
                             System.out.println("Let the battle commence!");
+                            //Toast.makeText(MainActivity.this, "Let the battle commence!", Toast.LENGTH_LONG).show();
+                            Random rand = new Random();
+                            int randomNum = rand.nextInt((10 - 0) + 1) + 0;
+                            List<MatchGamer> listGamers = match.getActiveGamers();
+                            String opId=null;
+                            for (MatchGamer match1 : listGamers) {
+                                if (!match1.getGamerId().equals(gamer.getGamerId())) {
+                                   opId = match1.getGamerId();
+                                }
+                            }
+                            gameState = new GameState(randomNum, opId);
                         }
                         return null;
                     }
@@ -263,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
                             } else if (match.getTurnGamerId().equals(gamer.getGamerId())) {
                                 // it's your turn to play!
                                 Log.d("Test", "It's my turn");
+                                myTurnsMatch = match;
                             } else {
                                 // match is active but it's not your turn.
                                 Log.d("Test", "It's not my turn");
@@ -275,6 +301,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void submitTurn(View v) {
+        String gameData = new Gson().toJson(gameState);
+        //int turnCount = myTurnsMatch.getTurnCount();
+
+        MatchTurnSubmitRequest request = MatchTurnSubmitRequest
+                .builder(session, myTurnsMatch.getMatchId(), 0, gameState.getOpponentId())
+                .data(gameData)
+                .build();
+
+        client.execute(request)
+                .addCallback(new Callback<Void, Response<Void>>() {
+                    @Override
+                    public Void call(Response<Void> response) {
+                        System.out.println("Successfully submitted new turn.");
+                        return null;
+                    }
+                })
+                .addErrback(errorCallback);
+
 
     }
 }

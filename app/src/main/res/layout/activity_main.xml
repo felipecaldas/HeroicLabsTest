@@ -53,4 +53,15 @@ tools:context="heroiclab.test.fcaldas.heroiclabstest.MainActivity">
         android:layout_below="@+id/button4"
         android:onClick="submitTurn"
         android:layout_alignStart="@+id/button4" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberSigned"
+        android:ems="10"
+        android:id="@+id/editText"
+        android:layout_below="@+id/button5"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp" />
+
 </RelativeLayout>
