@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:paddingBottom="@dimen/activity_vertical_margin"
+android:paddingLeft="@dimen/activity_horizontal_margin"
+android:paddingRight="@dimen/activity_horizontal_margin"
+android:paddingTop="@dimen/activity_vertical_margin"
+tools:context="heroiclab.test.fcaldas.heroiclabstest.MainActivity">
+
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Felipe"
+    android:id="@+id/button"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentStart="true"
+    android:onClick="loginFelipe" />
+
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Gemma"
+    android:id="@+id/button2"
+    android:layout_below="@+id/button"
+    android:layout_alignParentStart="true"
+    android:onClick="loginGemma" />
+
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Match"
+    android:id="@+id/button3"
+    android:layout_alignTop="@+id/button"
+    android:layout_alignParentEnd="true"
+    android:onClick="match" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="List Matches"
+        android:id="@+id/button4"
+        android:layout_below="@+id/button3"
+        android:layout_alignParentEnd="true"
+        android:onClick="listMatches" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit Turn"
+        android:id="@+id/button5"
+        android:layout_below="@+id/button4"
+        android:onClick="submitTurn"
+        android:layout_alignStart="@+id/button4" />
+</RelativeLayout>
